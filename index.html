@@ -1,0 +1,68 @@
+<html>
+
+<head>
+    <title>Git draw</title>
+</head>
+
+<body>
+    <style>
+        button {
+            display: block;
+            margin: 20px;
+        }
+    </style>
+    <svg width="828" height="128" class="js-calendar-graph-svg">
+        <g id="root" transform="translate(10, 20)">
+            <g id="column" transform="translate(0, 0)">
+                <rect width="12" height="12" x="16" y="0" fill="#ebedf0"></rect>
+                <rect width="12" height="12" x="16" y="15" fill="#ebedf0"></rect>
+                <rect width="12" height="12" x="16" y="30" fill="#ebedf0"></rect>
+                <rect width="12" height="12" x="16" y="45" fill="#ebedf0"></rect>
+                <rect width="12" height="12" x="16" y="60" fill="#ebedf0"></rect>
+                <rect width="12" height="12" x="16" y="75" fill="#ebedf0"></rect>
+                <rect width="12" height="12" x="16" y="90" fill="#ebedf0"></rect>
+            </g>
+        </g>
+    </svg>
+    <button>Save</button>
+    <script>
+        const colors = ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196127'];
+        const root = document.getElementById('root');
+        const column = document.getElementById('column');
+        
+        for(let i = 16; i < 320; i += 16){
+            const clone =  column.cloneNode(true);
+            clone.setAttribute('transform', `translate(${i}, 0)`);
+            root.appendChild(clone);
+        }
+
+
+        const rects = document.getElementsByTagName('rect');
+        for (const rect of rects)
+            rect.onclick = function () {
+                const color = rect.getAttribute('fill');
+                const index = colors.indexOf(color);
+                rect.setAttribute('fill', colors[index + 1] || colors[0]);
+            };
+
+        const button = document.getElementsByTagName('button')[0];
+        button.onclick = function () {
+            const date = new Date();
+            date.setDate(date.getDate() + (7 - date.getDay())); // Nearest sunday
+            const commits = [];
+            for(const rect of rects)
+                commits.push(
+                    colors.indexOf(rect.getAttribute('fill'))
+                );
+            const output = {
+                date,
+                commits
+            };
+            console.log(output);
+        };
+            
+        
+    </script>
+</body>
+
+</html>
