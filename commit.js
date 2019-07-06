@@ -21,7 +21,7 @@ const commit = (count = 1) => {
 };
 
 if(commitsIndex < 0)
-    console.log('too early');
+    console.log('too early', commitsIndex);
 else
     exec(`cd repo; git init; git remote add origin ${repo}`,
         (_err, stdout, stderr) => {
