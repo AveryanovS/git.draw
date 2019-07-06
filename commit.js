@@ -8,7 +8,7 @@ exec(`cd repo; git init; git remote add origin ${repo}`,
         fs.appendFile('repo/file.txt', String( new Date() ), error => {
             if(error)
                 return console.error(error);
-            exec(`git add -A; git commit -m "commit_of_${moment().format('DD-MM-YYYY')}"; git push;`,
+            exec(`git add -A; git commit -m "commit_of_${moment().format('DD-MM-YYYY')}"; git push --set-upstream origin master;`,
                 (_error, stdout, stderr) => {
                     console.log(stdout);
                     console.error(stderr);
