@@ -2,16 +2,35 @@
 
 <head>
     <title>Git draw</title>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
 </head>
 <body>
     <style>
-        button, input {
+        button, input, svg {
             display: block;
-            margin: 20px;
+            margin: auto;
+            margin-top: 10px;
+            font-family: 'Inconsolata', monospace;
+            font-size: 18px;
+            border: none;
+            border:solid 1px #ccc;
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+        svg {
+            padding: 0px 0px 0px 0px;
+            border: none;
+        }
+        input {
+            text-align: center;
+            width: 50%;
+        }
+        button:hover {
+            border:solid 3px lightblue;
         }
     </style>
-    <svg width="828" height="128" class="js-calendar-graph-svg">
-        <g id="root" transform="translate(10, 20)">
+    <svg width="760" height="128" class="js-calendar-graph-svg">
+        <g id="root" transform="translate(0, 20)">
             <g id="column" transform="translate(0, 0)">
                 <rect width="12" height="12" x="16" y="0" fill="#ebedf0"></rect>
                 <rect width="12" height="12" x="16" y="15" fill="#ebedf0"></rect>
@@ -24,7 +43,7 @@
         </g>
     </svg>
     <input id="repo" type="text" placeholder="Git repo url">
-    <button id="save" >Save</button>
+    <button id="save" >SAVE</button>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         const colors = ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196127'];
@@ -33,11 +52,12 @@
         const save = document.getElementById('save');
         const repo = document.getElementById('repo');
 
-        for(let i = 16; i < 320; i += 16){
+        for(let i = 16; i < 730; i += 16){
             const clone =  column.cloneNode(true);
             clone.setAttribute('transform', `translate(${i}, 0)`);
             root.appendChild(clone);
         }
+        const rects = document.getElementsByTagName('rect');
 
         let config = {};
         axios({
@@ -51,7 +71,6 @@
                 .then(() => {
                     if(config.repo)
                         repo.value = config.repo;
-                    const rects = document.getElementsByTagName('rect');
                     let index = 0;
                     for (const rect of rects){
                         if(config.commits && config.commits[index])
@@ -66,8 +85,6 @@
                 });
 
         
-
-
         
 
         save.onclick = function () {
@@ -84,7 +101,7 @@
                 commits
             };
 
-            save.innerHTML = 'Loading...';
+            save.innerHTML = 'LOADING...';
             save.disabled = true;
             axios({
                 method: 'post',
@@ -100,7 +117,7 @@
 
                 })
                 .then(() => {
-                    save.innerHTML = 'Save';
+                    save.innerHTML = 'SAVE';
                     save.disabled = false;
                 });
         };
