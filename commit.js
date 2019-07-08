@@ -9,7 +9,7 @@ const commit = (count = 1) => {
     fs.appendFile(`${__dirname}/repo/file.txt`, String( new Date() ), error => {
         if(error)
             return console.error(error);
-        console.log(`commiting, ${count - 1} left`);
+        console.log(new Date(), `commiting, ${count - 1} left`);
         exec(`cd ${__dirname}/repo; git add -A; git commit -m "commit_of_${moment().format('DD-MM-YYYY')}"; git push --set-upstream origin master;`,
             (_error, stdout, stderr) => {
                 console.log(stdout);
@@ -23,7 +23,7 @@ const commit = (count = 1) => {
 const dailyJob = () => {
     const commitsIndex = moment().startOf('day').diff(moment(date).startOf('day'), 'days');
     if(commitsIndex < 0)
-        console.log('too early', commitsIndex);
+        console.log(new Date(), 'too early', commitsIndex);
     else
         exec(`cd ${__dirname}/repo; git init; git remote add origin ${repo}`,
             (_err, stdout, stderr) => {
@@ -33,5 +33,5 @@ const dailyJob = () => {
             });
 };
 
-scheduleJob('30 11 * * * *', dailyJob);
+scheduleJob('0 0 10 * * *', dailyJob);
 
