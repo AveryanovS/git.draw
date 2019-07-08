@@ -22,8 +22,8 @@ Launch web interface
 node index
 ```
 
-Open http://localhost:8080 in your browser
-Draw, enter your repo url and save
+* Open http://localhost:8080 in your browser
+* Draw, enter your repo url and save
 
 After saving, you just need to start commit.js, for example by pm2
 ```
