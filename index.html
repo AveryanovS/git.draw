@@ -26,27 +26,50 @@
     </svg>
     <input id="repo" type="text" placeholder="Git repo url">
     <button id="save" >Save</button>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         const colors = ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196127'];
         const root = document.getElementById('root');
         const column = document.getElementById('column');
         const save = document.getElementById('save');
         const repo = document.getElementById('repo');
-        
+
         for(let i = 16; i < 320; i += 16){
             const clone =  column.cloneNode(true);
             clone.setAttribute('transform', `translate(${i}, 0)`);
             root.appendChild(clone);
         }
 
+        let config = {};
+        axios({
+                method: 'get',
+                url: '/config.json'
+            })
+                .then(({ data }) => {
+                    config = data;
+                })
+                .catch(console.error)
+                .then(() => {
+                    if(config.repo)
+                        repo.value = config.repo;
+                    const rects = document.getElementsByTagName('rect');
+                    let index = 0;
+                    for (const rect of rects){
+                        if(config.commits && config.commits[index])
+                            rect.setAttribute('fill', colors[ config.commits[index]/5 ])
+                        rect.onclick = () => {
+                            const color = rect.getAttribute('fill');
+                            const index = colors.indexOf(color);
+                            rect.setAttribute('fill', colors[index + 1] || colors[0]);
+                        };
+                        index++;
+                    }
+                });
 
-        const rects = document.getElementsByTagName('rect');
-        for (const rect of rects)
-            rect.onclick = function () {
-                const color = rect.getAttribute('fill');
-                const index = colors.indexOf(color);
-                rect.setAttribute('fill', colors[index + 1] || colors[0]);
-            };
+        
+
+
+        
 
         save.onclick = function () {
             const date = new Date();
@@ -61,27 +84,26 @@
                 date,
                 commits
             };
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify(data));
 
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState != 4) return;
-
-                save.innerHTML = 'Save';
-                save.disabled = false;
-
-                if (xhr.status != 200) {
-                    alert('Error');
-                    
-                } else {
-                    alert('Done');
-                }
-
-            }
             save.innerHTML = 'Loading...';
             save.disabled = true;
+            axios({
+                method: 'post',
+                url: '/',
+                data
+            })
+                .then(() => {
+                    alert('Done');
+
+                })
+                .catch(() => {
+                    alert('Error');
+
+                })
+                .then(() => {
+                    save.innerHTML = 'Save';
+                    save.disabled = false;
+                });
         };
             
         
