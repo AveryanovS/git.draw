@@ -33,5 +33,5 @@ const dailyJob = () => {
             });
 };
 
-scheduleJob('30 11 * * * *', checkRequests);
+scheduleJob('30 11 * * * *', dailyJob);
 
