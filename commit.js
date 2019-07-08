@@ -2,8 +2,8 @@ const { repo, commits, date } = require('./config.json');
 const exec = require('child_process').exec;
 const moment = require('moment');
 const fs = require('fs');
+const { scheduleJob } = require('node-schedule');
 
-const commitsIndex = moment().startOf('day').diff(moment(date).startOf('day'), 'days');
 
 const commit = (count = 1) => {
     fs.appendFile(`${__dirname}/repo/file.txt`, String( new Date() ), error => {
@@ -20,12 +20,18 @@ const commit = (count = 1) => {
     });
 };
 
-if(commitsIndex < 0)
-    console.log('too early', commitsIndex);
-else
-    exec(`cd ${__dirname}/repo; git init; git remote add origin ${repo}`,
-        (_err, stdout, stderr) => {
-            console.log(stdout);
-            console.error(stderr);
-            commit(commits[commitsIndex]);
-        });
+const dailyJob = () => {
+    const commitsIndex = moment().startOf('day').diff(moment(date).startOf('day'), 'days');
+    if(commitsIndex < 0)
+        console.log('too early', commitsIndex);
+    else
+        exec(`cd ${__dirname}/repo; git init; git remote add origin ${repo}`,
+            (_err, stdout, stderr) => {
+                console.log(stdout);
+                console.error(stderr);
+                commit(commits[commitsIndex]);
+            });
+};
+
+scheduleJob('30 11 * * * *', checkRequests);
+
